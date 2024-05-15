@@ -22,7 +22,10 @@ app.use(
 );
 
 app.use(express.static("public"));
-
 app.use(cookieParser());
 
+// user router export
+import userRouter from "./routes/user.routes.js";
+import bodyParser from "body-parser";
+app.use("/api/V1/users", userRouter);
 export { app };
