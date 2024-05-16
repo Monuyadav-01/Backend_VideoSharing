@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+
 const userSchema = new Schema(
   {
     username: {
@@ -15,7 +16,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
-      lowecase: true,
+      lowercase: true, // fixed typo
       trim: true,
     },
     fullname: {
@@ -25,11 +26,11 @@ const userSchema = new Schema(
       index: true,
     },
     avatar: {
-      type: String, // cloudnary to upload
+      type: String, // cloudinary to upload
       required: true,
     },
     coverimage: {
-      type: String, // taken cloudnary
+      type: String, // taken from cloudinary
     },
     watchhistory: [
       {
@@ -54,14 +55,20 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-  userSchema.methods.isPasswordCorrect = async function (password) {
+userSchema.methods.isPasswordCorrect = async function (password) {
+  if (!password) {
+    throw new Error("Password parameter is required");
+  }
+  if (!this.password) {
+    throw new Error("User password is not set");
+  }
   return await bcrypt.compare(password, this.password);
 };
 
-userSchema.methods.generateAccessToken = async function () {
-  return await jwt.sign(
+userSchema.methods.generateAccessToken = function () {
+  return jwt.sign(
     {
-      _id: _this.id,
+      _id: this._id,
       email: this.email,
       username: this.username,
       fullname: this.fullname,
@@ -72,10 +79,11 @@ userSchema.methods.generateAccessToken = async function () {
     }
   );
 };
-userSchema.methods.generateRefreshToken = async function () {
-  return await jwt.sign(
+
+userSchema.methods.generateRefreshToken = function () {
+  return jwt.sign(
     {
-      _id: _this.id,
+      _id: this._id,
     },
     process.env.REFRESH_TOKEN_SECRET,
     {
@@ -86,4 +94,4 @@ userSchema.methods.generateRefreshToken = async function () {
 
 const User = mongoose.model("User", userSchema);
 
-export default{ User};
+export  {User};
