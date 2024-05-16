@@ -38,5 +38,5 @@ app.get("/",  (req, res) => {
 });
 // user router export
 import userRouter from "./routes/user.routes.js";
-app.use("/api/V1/users", userRouter);
+app.use("/users", userRouter);
 export { app };
