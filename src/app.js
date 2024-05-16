@@ -20,12 +20,21 @@ app.use(
     limit: "16kb",
   })
 );
-
+const getUser = asyncHandler(async (req, res) => {
+  try {
+    const user_data = await User.find();
+    console.log(user_data);
+    res.status(200).json({ user_data });
+  } catch (error) {
+    res.status(500).json({
+      message: "something went wrong",
+    });
+  }
+});
 app.use(express.static("public"));
 app.use(cookieParser());
-
+app.get("/", getUser);
 // user router export
 import userRouter from "./routes/user.routes.js";
-import bodyParser from "body-parser";
 app.use("/api/V1/users", userRouter);
 export { app };
