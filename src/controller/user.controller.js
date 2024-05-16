@@ -77,6 +77,18 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, createdUser, "User registered successfully"));
 });
 
+const getUser = asyncHandler(async (req, res) => {
+  try {
+    const user_data = await User.find();
+    console.log(user_data);
+    res.status(200).json({ user_data });
+  } catch (error) {
+    res.status(500).json({
+      message: "something went wrong",
+    });
+  }
+});
+
 const loginUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -137,11 +149,11 @@ const userLogout = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: true,
   };
-      return res
-        .status(200)
-        .clearCookie("accessToken", options)
-        .clearCookie("refreshToken", options)
-        .json(new ApiResponse(200, {}, "User logged Out"));
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged Out"));
 });
 
-export { registerUser, loginUser,userLogout };
+export { registerUser, loginUser, userLogout , getUser};
