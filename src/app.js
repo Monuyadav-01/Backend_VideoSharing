@@ -20,20 +20,22 @@ app.use(
     limit: "16kb",
   })
 );
-const getUser = asyncHandler(async (req, res) => {
-  try {
-    const user_data = await User.find();
-    console.log(user_data);
-    res.status(200).json({ user_data });
-  } catch (error) {
-    res.status(500).json({
-      message: "something went wrong",
-    });
-  }
-});
+// const getUser = asyncHandler(async (req, res) => {
+//   try {
+//     const user_data = await User.find();
+//     console.log(user_data);
+//     res.status(200).json({ user_data });
+//   } catch (error) {
+//     res.status(500).json({
+//       message: "something went wrong",
+//     });
+//   }
+// });
 app.use(express.static("public"));
 app.use(cookieParser());
-app.get("/", getUser);
+app.get("/",  (req, res) => {
+  res.send("hello world");
+});
 // user router export
 import userRouter from "./routes/user.routes.js";
 app.use("/api/V1/users", userRouter);
