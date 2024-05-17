@@ -77,8 +77,6 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, createdUser, "User registered successfully"));
 });
 
-
-
 const loginUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -109,8 +107,6 @@ const loginUser = asyncHandler(async (req, res) => {
   const cookieOptions = {
     httpOnly: true,
     secure: true,
-    sameSite: "strict",
-    maxAge: 15 * 60 * 1000, // 15 minutes for access token
   };
 
   res
@@ -118,32 +114,31 @@ const loginUser = asyncHandler(async (req, res) => {
     .cookie("accessToken", accessToken, cookieOptions)
     .cookie("refreshToken", refreshToken, {
       ...cookieOptions,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
     }) // 7 days for refresh token
     .json(new ApiResponse(200, loggedInUser, "Login successful"));
 });
 
 const userLogout = asyncHandler(async (req, res) => {
-  await User.findByIdAndDelete(
+  await User.findByIdAndUpdate(
     req.user._id,
     {
-      $unset: {
-        refreshtoken: 1,
-      },
+      $set: { refreshtoken: undefined },
     },
     {
       new: true,
     }
   );
+
   const options = {
     httpOnly: true,
     secure: true,
   };
+
   return res
     .status(200)
-    .clearCookie("accessToken", options)
-    .clearCookie("refreshToken", options)
-    .json(new ApiResponse(200, {}, "User logged Out"));
+    .clearCookies("accesstoken", options)
+    .clearCookies("refreshtoken", options)
+    .json(new ApiResponse(200, "user logout"));
 });
 
 export { registerUser, loginUser, userLogout };
