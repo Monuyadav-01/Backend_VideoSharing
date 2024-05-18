@@ -8,7 +8,7 @@ dotenv.config({
 connectDB()
   .then(async () => {
     app.listen(process.env.PORT, () => {
-      console.log(`Server connected`);
+      console.log(`Server connected :  ${process.env.PORT}`);
     });
   })
   .catch((error) => {
