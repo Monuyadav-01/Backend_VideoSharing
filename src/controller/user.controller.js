@@ -4,6 +4,7 @@ import ApiError from "../utils/ApiError.js";
 import { uploadFileOnCloudinary } from "../utils/cloudnary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
+
 const accessTokenAndRefreshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -281,11 +282,12 @@ const updteCoverImage = asyncHandler(async (req, res) => {
 
   res.status(200).json(ApiResponse(200, "CoverImage Updated Successfully"));
 });
+
 const getUsers = asyncHandler(async (req, res) => {
   const users = await User.find({}).select("-password");
-  res.status(200).json({users});
-
+  res.status(200).json({ users });
 });
+
 export {
   registerUser,
   loginUser,
@@ -296,5 +298,5 @@ export {
   updateAccountDetails,
   updateUserAvatar,
   updteCoverImage,
-  getUsers
+  getUsers,
 };
