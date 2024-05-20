@@ -210,17 +210,15 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 });
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-
-  const user = req.user
+  const user = req.user;
   console.log(user);
   return res.status(200).json(200, user, "Current User fetch successfully");
 });
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
-  
   const { fullname, email } = req.body;
 
-  console.log(fullname , email);
+  console.log(fullname, email);
   if (!fullname || !email) {
     throw new ApiError(400, "All fields are required");
   }
@@ -259,7 +257,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     },
     { new: true }
   ).select("-password");
-  res.status(200).json(ApiResponse(200, "Avatar Updated Successfully"));
+  res.status(200).json(new ApiResponse(200, "Avatar Updated Successfully"));
 });
 
 const updteCoverImage = asyncHandler(async (req, res) => {
@@ -284,6 +282,11 @@ const updteCoverImage = asyncHandler(async (req, res) => {
 
   res.status(200).json(ApiResponse(200, "CoverImage Updated Successfully"));
 });
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({}).select("-password");
+  res.status(200).json({users});
+
+});
 export {
   registerUser,
   loginUser,
@@ -294,4 +297,5 @@ export {
   updateAccountDetails,
   updateUserAvatar,
   updteCoverImage,
+  getUsers
 };
